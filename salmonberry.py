@@ -29,6 +29,31 @@ def get_all_entries(feed_urls):
     return entries
 
 
+def get_vectorizer(entries):
+    titles = [doc["title"] for doc in entries]
+    vect = CountVectorizer()
+    vect.fit(titles)
+    return vect
+
+
+def get_vectors(entries, vectorizer):
+    titles = [doc["title"] for doc in entries]
+    return vectorizer.transform(titles)
+
+
+def save_ratings(answers, filename):
+    with open(filename, 'w') as fd:
+        yaml.dump(answers, fd)
+
+
+def load_ratings(filename):
+    try:
+        with open(filename, 'r') as fd:
+            return yaml.load(fd)
+    except FileNotFoundError:
+        return {}
+
+
 def main():
     urls = get_feed_urls(FEEDS_FILENAME)
     fetched_entries = get_all_entries(urls)
@@ -85,31 +110,6 @@ def main():
 
     answers.update(new_answers)
     save_ratings(answers, RATING_FILENAME)
-
-
-def get_vectorizer(entries):
-    titles = [doc["title"] for doc in entries]
-    vect = CountVectorizer()
-    vect.fit(titles)
-    return vect
-
-
-def get_vectors(entries, vectorizer):
-    titles = [doc["title"] for doc in entries]
-    return vectorizer.transform(titles)
-
-
-def save_ratings(answers, filename):
-    with open(filename, 'w') as fd:
-        yaml.dump(answers, fd)
-
-
-def load_ratings(filename):
-    try:
-        with open(filename, 'r') as fd:
-            return yaml.load(fd)
-    except FileNotFoundError:
-        return {}
 
 
 if __name__ == '__main__':
