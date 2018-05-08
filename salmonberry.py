@@ -10,14 +10,29 @@ from sklearn.linear_model import LinearRegression
 logging.basicConfig(level=logging.DEBUG)
 
 
-
-url = 'https://www.reddit.com/r/MachineLearning/new/.rss'
-# url = 'https://www.reddit.com/r/artificial/new/.rss'
 RATING_FILENAME = 'ratings.yaml'
+FEEDS_FILENAME = 'feeds.yaml'
+
+
+def get_feed_urls(filename):
+    with open(FEEDS_FILENAME) as fd:
+        return yaml.load(fd)
+
+
+def get_all_entries(feed_urls):
+    entries = []
+
+    for url in feed_urls:
+        feed = feedparser.parse(url)
+        entries += feed.entries
+
+    return entries
 
 
 def main():
-    feed = feedparser.parse(url)
+    urls = get_feed_urls(FEEDS_FILENAME)
+    fetched_entries = get_all_entries(urls)
+
     entrymap = {}
     c = {}
 
@@ -32,10 +47,9 @@ def main():
 
         linreg = LinearRegression()
         targets = scipy.array([1 if ans['rating'] == 'y' else 0 for ans in answers.values()])
-        # import ipdb; ipdb.set_trace()
         linreg.fit(features, targets)
 
-    new_entries = {entry for entry in feed.entries if entry.link not in answers}
+    new_entries = {entry for entry in fetched_entries if entry.link not in answers}
     print(f'Found {len(new_entries)} new entries, {len(answers)} old entries.')
 
     new_answers = {}
