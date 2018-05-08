@@ -1,1 +1,4 @@
 feedparser
+pyyaml
+scipy
+scikit-learn
