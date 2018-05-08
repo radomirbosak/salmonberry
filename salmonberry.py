@@ -14,6 +14,49 @@ RATING_FILENAME = 'ratings.yaml'
 FEEDS_FILENAME = 'feeds.yaml'
 
 
+class Predictor:
+
+    def __init__(self, entries):
+        self.entries = entries
+
+        if not self.entries:
+            return
+
+        self.vectorizer = get_vectorizer(entries)
+        vectors = get_vectors(entries, self.vectorizer)
+
+        self.transformer = TfidfTransformer()
+        features = self.transformer.fit_transform(vectors)
+
+        self.linreg = LinearRegression()
+        targets = scipy.array([1 if ans['rating'] == 'y' else 0 for ans in entries])
+        self.linreg.fit(features, targets)
+
+    def predict(self, new_title):
+        if not self.entries:
+            return None
+
+        new_vect = self.vectorizer.transform([new_title])
+        new_vect2 = self.transformer.transform(new_vect)
+        return self.linreg.predict(new_vect2)[0]
+
+
+def percent(value):
+    return int(round(value * 100))
+
+
+def get_vectorizer(entries):
+    titles = [doc["title"] for doc in entries]
+    vect = CountVectorizer()
+    vect.fit(titles)
+    return vect
+
+
+def get_vectors(entries, vectorizer):
+    titles = [doc["title"] for doc in entries]
+    return vectorizer.transform(titles)
+
+
 def get_feed_urls(filename):
     with open(FEEDS_FILENAME) as fd:
         return yaml.load(fd)
@@ -27,18 +70,6 @@ def get_all_entries(feed_urls):
         entries += feed.entries
 
     return entries
-
-
-def get_vectorizer(entries):
-    titles = [doc["title"] for doc in entries]
-    vect = CountVectorizer()
-    vect.fit(titles)
-    return vect
-
-
-def get_vectors(entries, vectorizer):
-    titles = [doc["title"] for doc in entries]
-    return vectorizer.transform(titles)
 
 
 def save_ratings(answers, filename):
@@ -58,21 +89,9 @@ def main():
     urls = get_feed_urls(FEEDS_FILENAME)
     fetched_entries = get_all_entries(urls)
 
-    entrymap = {}
-    c = {}
-
     answers = load_ratings(RATING_FILENAME)
 
-    if answers:
-        vectorizer = get_vectorizer(answers.values())
-        vectors = get_vectors(answers.values(), vectorizer)
-
-        transformer = TfidfTransformer()
-        features = transformer.fit_transform(vectors)
-
-        linreg = LinearRegression()
-        targets = scipy.array([1 if ans['rating'] == 'y' else 0 for ans in answers.values()])
-        linreg.fit(features, targets)
+    predictor = Predictor(answers.values())
 
     new_entries = {entry for entry in fetched_entries if entry.link not in answers}
     print(f'Found {len(new_entries)} new entries, {len(answers)} old entries.')
@@ -83,13 +102,9 @@ def main():
 
         prompt = f'{i}/{len(new_entries)} | {entry.title}: [y/n] '
 
-        if answers:
-            new_vect = vectorizer.transform([entry.title])
-            new_vect2 = transformer.transform(new_vect)
-            hod = linreg.predict(new_vect2)[0]
-
-            percent = int(round(hod * 100))
-            print(f'Predicted value: {percent}%')
+        value = predictor.predict(entry.title)
+        if value is not None:
+            print(f'Predicted value: {percent(value)}%')
 
         try:
             answer = input(prompt)
