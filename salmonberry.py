@@ -36,7 +36,7 @@ def main():
     entrymap = {}
     c = {}
 
-    answers = get_answers(RATING_FILENAME)
+    answers = load_ratings(RATING_FILENAME)
 
     if answers:
         vectorizer = get_vectorizer(answers.values())
@@ -84,7 +84,7 @@ def main():
     print(f'Answers | yes: {c["y"]}, no: {c["n"]}, others: {others}')
 
     answers.update(new_answers)
-    dump_answers(answers, RATING_FILENAME)
+    save_ratings(answers, RATING_FILENAME)
 
 
 def get_vectorizer(entries):
@@ -99,12 +99,12 @@ def get_vectors(entries, vectorizer):
     return vectorizer.transform(titles)
 
 
-def dump_answers(answers, filename):
+def save_ratings(answers, filename):
     with open(filename, 'w') as fd:
         yaml.dump(answers, fd)
 
 
-def get_answers(filename):
+def load_ratings(filename):
     try:
         with open(filename, 'r') as fd:
             return yaml.load(fd)
