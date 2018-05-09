@@ -4,8 +4,11 @@ from collections import Counter
 import yaml
 import feedparser
 import scipy
+import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import mean_absolute_error
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -26,11 +29,11 @@ class Predictor:
         vectors = get_vectors(entries, self.vectorizer)
 
         self.transformer = TfidfTransformer()
-        features = self.transformer.fit_transform(vectors)
+        self.features = self.transformer.fit_transform(vectors)
 
         self.linreg = LinearRegression()
-        targets = scipy.array([1 if ans['rating'] == 'y' else 0 for ans in entries])
-        self.linreg.fit(features, targets)
+        self.targets = scipy.array([1 if ans['rating'] == 'y' else 0 for ans in entries])
+        self.linreg.fit(self.features, self.targets)
 
     def predict(self, new_title):
         if not self.entries:
@@ -39,6 +42,25 @@ class Predictor:
         new_vect = self.vectorizer.transform([new_title])
         new_vect2 = self.transformer.transform(new_vect)
         return self.linreg.predict(new_vect2)[0]
+
+    @property
+    def error(self):
+        # -- 1.
+        errors = []
+        k_fold = 10
+
+        for _ in range(k_fold):
+            train_feat, test_feat, train_tar, test_tar = train_test_split(self.features, self.targets)
+
+            test_lin_reg = LinearRegression()
+            test_lin_reg.fit(train_feat, train_tar)
+
+            test_pred = test_lin_reg.predict(test_feat)
+
+            absvals = np.abs(test_tar - test_pred)
+            errors.append(absvals.mean())
+
+        return np.average(errors), np.std(errors)
 
 
 def percent(value):
