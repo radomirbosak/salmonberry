@@ -7,8 +7,7 @@ import scipy
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -32,7 +31,8 @@ class Predictor:
         self.features = self.transformer.fit_transform(vectors)
 
         self.linreg = LinearRegression()
-        self.targets = scipy.array([1 if ans['rating'] == 'y' else 0 for ans in entries])
+        self.targets = scipy.array([1 if ans['rating'] == 'y'
+                                    else 0 for ans in entries])
         self.linreg.fit(self.features, self.targets)
 
     def predict(self, new_title):
@@ -50,7 +50,8 @@ class Predictor:
         k_fold = 10
 
         for _ in range(k_fold):
-            train_feat, test_feat, train_tar, test_tar = train_test_split(self.features, self.targets)
+            train_feat, test_feat, train_tar, test_tar = \
+                train_test_split(self.features, self.targets)
 
             test_lin_reg = LinearRegression()
             test_lin_reg.fit(train_feat, train_tar)
