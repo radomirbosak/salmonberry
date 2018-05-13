@@ -7,3 +7,6 @@ test_flake:
 
 test_cli:
 	pytest tests/cli
+
+test_cli_loop:
+	tdd 'make test_cli'

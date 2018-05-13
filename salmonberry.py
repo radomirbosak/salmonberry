@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 import logging
+import argparse
 from collections import Counter
 
 import yaml
@@ -108,7 +110,7 @@ def load_ratings(filename):
         return {}
 
 
-def main():
+def learn():
     urls = get_feed_urls(FEEDS_FILENAME)
     fetched_entries = get_all_entries(urls)
 
@@ -148,6 +150,28 @@ def main():
 
     answers.update(new_answers)
     save_ratings(answers, RATING_FILENAME)
+
+
+def download():
+    print('Cache updated.')
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest='action')
+    subparsers.required = True
+    subp_down = subparsers.add_parser('download')
+    subp_down.add_argument('-f')
+    subp_down.add_argument('-c')
+
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+
+    if args.action == 'download':
+        download()
 
 
 if __name__ == '__main__':
