@@ -1,12 +1,18 @@
-.PHONY: test test_flake test_cli
+.PHONY: test test_flake test_cli test_unit
 
-test: test_flake test_cli
+test: test_unit test_cli test_flake
 
 test_flake:
 	flake8 salmonberry.py --max-line-length=88
 
 test_cli:
-	pytest tests/cli
+	python3 -m pytest -vv tests/cli
+
+test_unit:
+	python3 -m pytest tests/unit
 
 test_cli_loop:
 	tdd 'make test_cli'
+
+test_loop:
+	tdd 'make test'

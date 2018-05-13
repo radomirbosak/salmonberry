@@ -1,2 +1,2 @@
-$ ./salmonberry.py download -f feeds.yaml -c cache.yaml
+$ ./salmonberry.py download -f feeds.yaml -c /tmp/cache.yaml
 Cache updated.

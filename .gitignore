@@ -1,3 +1,4 @@
 ratings.yaml
 __pycache__
 .pytest_cache
+cache.yaml
