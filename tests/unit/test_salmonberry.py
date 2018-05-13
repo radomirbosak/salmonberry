@@ -32,11 +32,8 @@ def test_download(tmpdir, mock_feedparse):
     dest_yaml = yaml.load(content)
     assert len(dest_yaml) == 3
 
-@pytest.fixture()
-def mock_get_unlabeled(monkeypatch):
-    pass  #monkeypatch.setattr()
-
-def test_label(tmpdir, mock_get_unlabeled):
+def test_label(tmpdir, monkeypatch):
+    monkeypatch.setattr('salmonberry.ask_labels', lambda x: ['l2'])
     cachefile = tmpdir / 'cache.yaml'
     cachefile.write('- {id: entry1}\n- {id: entry2}')
 
@@ -47,5 +44,10 @@ def test_label(tmpdir, mock_get_unlabeled):
 
     label(cachefile, labelsfile)
 
-    content = labelsfile.read()
-    #assert content == ''
+    content = yaml.load(labelsfile.read())
+
+    expected_content = [
+        {'id': 'entry1', 'labels': ['l1']},
+        {'id': 'entry2', 'labels': ['l2']}
+    ]
+    assert content == expected_content

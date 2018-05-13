@@ -177,6 +177,7 @@ def save_yaml(data, filename):
     with open(filename, 'w') as fd:
         yaml.dump(data, fd)
 
+
 def load_cache(cache_filename):
     cache = load_yaml(cache_filename, default=[])
     logging.debug('Loaded %d old entries.', len(cache))
@@ -214,6 +215,10 @@ def get_unlabeled(cache, labels):
     return [entry for entry in cache if entry['id'] not in labeled_ids]
 
 
+def ask_labels(entry):
+    pass
+
+
 def download(feeds_filename, cache_filename):
     feed_urls = get_feed_urls(feeds_filename)
     fetched_entries = get_all_entries(feed_urls)
@@ -227,15 +232,18 @@ def download(feeds_filename, cache_filename):
 def label(cache_filename, labels_filename):
     # load cache
     cache = load_cache(cache_filename)
-    labels = load_labels(labels_filename)
+    labeled = load_labels(labels_filename)
 
     # get unlabeled entries
+    unlabeled = get_unlabeled(cache, labeled)
 
     # ask for label(s)
-
+    for entry in unlabeled:
+        labels = ask_labels(entry)
+        labeled.append({'id': entry['id'], 'labels': labels})
 
     # write down labels
-    save_labels(labels, labels_filename)
+    save_labels(labeled, labels_filename)
 
 
 def parse_args():
