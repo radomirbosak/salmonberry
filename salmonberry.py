@@ -17,6 +17,7 @@ logging.basicConfig(level=logging.INFO)
 RATING_FILENAME = 'ratings.yaml'
 FEEDS_FILENAME = 'feeds.yaml'
 CACHE_FILENAME = 'cache.yaml'
+LABELS_FILENAME = 'labels.yaml'
 
 
 class Predictor:
@@ -164,12 +165,20 @@ def to_dicts(tree):
         return tree
 
 
-def load_cache(cache_filename):
+def load_yaml(filename, default=[]):
     try:
-        with open(cache_filename, 'r') as fd:
-            cache = yaml.load(fd) or []
+        with open(filename, 'r') as fd:
+            return yaml.load(fd) or default
     except FileNotFoundError:
-        cache = []
+        return default
+
+
+def save_yaml(data, filename):
+    with open(filename, 'w') as fd:
+        yaml.dump(data, fd)
+
+def load_cache(cache_filename):
+    cache = load_yaml(cache_filename, default=[])
     logging.debug('Loaded %d old entries.', len(cache))
     return cache
 
@@ -187,15 +196,27 @@ def update_cache(old_cache, new_entries):
 
 
 def save_cache(data, cache_filename):
-    with open(cache_filename, 'w') as fd:
-        yaml.dump(data, fd)
+    save_yaml(data, cache_filename)
+
+
+def load_labels(labels_filename):
+    labels = load_yaml(labels_filename)
+    logging.debug('Loaded %d labels.', len(labels))
+    return labels
+
+
+def save_labels(data, labels_filename):
+    save_yaml(data, labels_filename)
+
+
+def get_unlabeled(cache, labels):
+    labeled_ids = set(entry['id'] for entry in labels)
+    return [entry for entry in cache if entry['id'] not in labeled_ids]
 
 
 def download(feeds_filename, cache_filename):
     feed_urls = get_feed_urls(feeds_filename)
     fetched_entries = get_all_entries(feed_urls)
-
-    # import ipdb; ipdb.set_trace()
 
     cache = load_cache(cache_filename)
     update_cache(cache, fetched_entries)
@@ -203,13 +224,32 @@ def download(feeds_filename, cache_filename):
     print('Cache updated.')
 
 
+def label(cache_filename, labels_filename):
+    # load cache
+    cache = load_cache(cache_filename)
+    labels = load_labels(labels_filename)
+
+    # get unlabeled entries
+
+    # ask for label(s)
+
+
+    # write down labels
+    save_labels(labels, labels_filename)
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest='action')
     subparsers.required = True
+
     subp_down = subparsers.add_parser('download')
     subp_down.add_argument('-f', '--feed-list', default=FEEDS_FILENAME)
     subp_down.add_argument('-c', '--cache', default=CACHE_FILENAME)
+
+    subp_label = subparsers.add_parser('label')
+    subp_label.add_argument('-c', '--cache', default=CACHE_FILENAME)
+    subp_label.add_argument('-l', '--labels', default=LABELS_FILENAME)
 
     return parser.parse_args()
 

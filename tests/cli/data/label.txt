@@ -1,0 +1,1 @@
+$ ./salmonberry.py label -c cache.yaml -l labels.yaml

@@ -28,6 +28,7 @@ def generate_cases(source_file):
 
 
 basic_cases = generate_cases('tests/cli/data/download.txt')
+basic_cases += generate_cases('tests/cli/data/label.txt')
 
 
 def run_bash(input):
