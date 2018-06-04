@@ -216,8 +216,9 @@ def get_unlabeled(cache, labels):
 
 
 def ask_labels(entry):
-    pass
-
+    print('Title: ' + entry['title'])
+    answer = input('Labels: ')
+    return answer.split()
 
 def download(feeds_filename, cache_filename):
     feed_urls = get_feed_urls(feeds_filename)
@@ -238,11 +239,16 @@ def label(cache_filename, labels_filename):
     unlabeled = get_unlabeled(cache, labeled)
 
     # ask for label(s)
-    for entry in unlabeled:
-        labels = ask_labels(entry)
-        labeled.append({'id': entry['id'], 'labels': labels})
+    print('For each article enter space-separated list of labels.')
+    try:
+        for entry in unlabeled:
+            labels = ask_labels(entry)
+            labeled.append({'id': entry['id'], 'labels': labels})
+    except EOFError:
+        logging.debug('Labeling interrupted')
 
     # write down labels
+    logging.debug('Writing %d labels')
     save_labels(labeled, labels_filename)
 
 
@@ -267,6 +273,8 @@ def main():
 
     if args.action == 'download':
         download(args.feed_list, args.cache)
+    elif args.action == 'label':
+        label(args.cache, args.labels)
 
 
 if __name__ == '__main__':
