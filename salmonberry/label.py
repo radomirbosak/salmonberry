@@ -80,13 +80,17 @@ def predict_labels(cache_filename, labels_filename):
     # 1.2 prepare y-s for each label
     logging.debug('training classifiers')
     models = {}
+    scores = []
     for label in all_labels:
         ys = [label in labeled_article['labels'] for labeled_article in labeled]
         ys = np.array(ys, dtype=np.int)
 
         classifier = LogisticRegression(C=10)
         classifier.fit(xs, ys)
+        scores.append(classifier.score(xs, ys))
         models[label] = classifier
+
+    logging.debug('score: %.2f +- %.2f', np.average(scores), np.std(scores))
 
     # 2. get user input
     sentence = input('Sentence: ')
