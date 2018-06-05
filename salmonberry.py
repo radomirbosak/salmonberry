@@ -240,15 +240,17 @@ def label(cache_filename, labels_filename):
 
     # ask for label(s)
     print('For each article enter space-separated list of labels.')
+    num_new_labels = 0
     try:
         for entry in unlabeled:
             labels = ask_labels(entry)
             labeled.append({'id': entry['id'], 'labels': labels})
+            num_new_labels += 1
     except EOFError:
         logging.debug('Labeling interrupted')
 
     # write down labels
-    logging.debug('Writing %d labels')
+    logging.debug('Writing %d labels', num_new_labels)
     save_labels(labeled, labels_filename)
 
 
