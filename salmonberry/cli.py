@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 import logging
 import argparse
-from collections import Counter
-
-import yaml
-import scipy
-import numpy as np
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
 
 from .download import download
 from .label import label, predict_labels

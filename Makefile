@@ -3,7 +3,7 @@
 test: test_pytest test_flake
 
 test_flake:
-	flake8 salmonberry.py --max-line-length=88
+	flake8 sal salmonberry/ --max-line-length=88
 
 test_pytest:
 	python3 -m pytest tests/

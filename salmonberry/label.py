@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 from .common import load_yaml, save_yaml, load_cache
 
+
 def load_labels(labels_filename):
     labels = load_yaml(labels_filename)
     logging.debug('Loaded %d labels.', len(labels))
@@ -86,7 +87,6 @@ def predict_labels(cache_filename, labels_filename):
         classifier = LogisticRegression(C=10)
         classifier.fit(xs, ys)
         models[label] = classifier
-
 
     # 2. get user input
     sentence = input('Sentence: ')
