@@ -11,7 +11,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 RATING_FILENAME = 'ratings.yaml'
