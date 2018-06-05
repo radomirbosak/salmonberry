@@ -14,10 +14,10 @@ from sklearn.model_selection import train_test_split
 logging.basicConfig(level=logging.DEBUG)
 
 
-RATING_FILENAME = 'ratings.yaml'
-FEEDS_FILENAME = 'feeds.yaml'
-CACHE_FILENAME = 'cache.yaml'
-LABELS_FILENAME = 'labels.yaml'
+RATING_FILENAME = 'data/ratings.yaml'
+FEEDS_FILENAME = 'data/feeds.yaml'
+CACHE_FILENAME = 'data/cache.yaml'
+LABELS_FILENAME = 'data/labels.yaml'
 
 
 class Predictor:
