@@ -11,7 +11,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
 from .download import download
-from .label import label
+from .label import label, predict_labels
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -35,6 +35,10 @@ def parse_args():
     subp_label.add_argument('-c', '--cache', default=CACHE_FILENAME)
     subp_label.add_argument('-l', '--labels', default=LABELS_FILENAME)
 
+    subp_predict_labels = subparsers.add_parser('predict_labels')
+    subp_predict_labels.add_argument('-c', '--cache', default=CACHE_FILENAME)
+    subp_predict_labels.add_argument('-l', '--labels', default=LABELS_FILENAME)
+
     return parser.parse_args()
 
 
@@ -45,6 +49,8 @@ def main():
         download(args.feed_list, args.cache)
     elif args.action == 'label':
         label(args.cache, args.labels)
+    elif args.action == 'predict_labels':
+        predict_labels(args.cache, args.labels)
 
 
 if __name__ == '__main__':
