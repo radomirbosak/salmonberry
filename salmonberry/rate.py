@@ -10,6 +10,16 @@ def load_ratings(ratings_filename):
     return ratings
 
 
+def ask_rating():
+    while True:
+        answer = input('Rating x/z: ')
+        if answer not in ['x', 'z']:
+            print('Only values "x" and "z" are allowed.')
+            continue
+
+        return answer
+
+
 def rate(cache_filename, labels_filename, ratings_filename):
     # 1. load article cache, labels, and ratings
     cache = load_cache(cache_filename)
@@ -34,7 +44,7 @@ def rate(cache_filename, labels_filename, ratings_filename):
             labels = labels_map[article['id']]
             print('Title: ' + article['title'])
             print('Labels: ' + ', '.join(labels))
-            answer = input('Rating x/z: ')
+            answer = ask_rating()
             ratings.append({
                 'id': article['id'],
                 'rating': answer,
