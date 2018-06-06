@@ -54,3 +54,7 @@ def rate(cache_filename, labels_filename, ratings_filename):
 
     # 5. save ratings
     save_yaml(ratings, ratings_filename)
+
+
+def predict_rating(cache_filename, labels_filename, ratings_filename):
+    print('predicting')
