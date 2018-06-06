@@ -17,27 +17,29 @@ LABELS_FILENAME = 'data/labels.yaml'
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument('-f', '--feed-list', default=FEEDS_FILENAME)
+    parser.add_argument('-c', '--cache', default=CACHE_FILENAME)
+    parser.add_argument('-l', '--labels', default=LABELS_FILENAME)
+    parser.add_argument('-r', '--rating', default=RATING_FILENAME)
+
     subparsers = parser.add_subparsers(dest='action')
     subparsers.required = True
 
-    subp_down = subparsers.add_parser('download', help='Download articles from feed.')
-    subp_down.add_argument('-f', '--feed-list', default=FEEDS_FILENAME)
-    subp_down.add_argument('-c', '--cache', default=CACHE_FILENAME)
+    subp_down = subparsers.add_parser(
+        'download',
+        help='Download articles from feed.')
 
-    subp_label = subparsers.add_parser('label',
-                                       help='Manually label unlabeled articles.')
-    subp_label.add_argument('-c', '--cache', default=CACHE_FILENAME)
-    subp_label.add_argument('-l', '--labels', default=LABELS_FILENAME)
+    subp_label = subparsers.add_parser(
+        'label',
+        help='Manually label unlabeled articles.')
 
-    subp_predict_labels = subparsers.add_parser('predict_labels',
-                                                help='Autolabel given sentence.')
-    subp_predict_labels.add_argument('-c', '--cache', default=CACHE_FILENAME)
-    subp_predict_labels.add_argument('-l', '--labels', default=LABELS_FILENAME)
+    subp_predict_labels = subparsers.add_parser(
+        'predict_labels',
+        help='Autolabel given sentence.')
 
-    subp_rate = subparsers.add_parser('rate', help='Manually rate articles.')
-    subp_rate.add_argument('-c', '--cache', default=CACHE_FILENAME)
-    subp_rate.add_argument('-l', '--labels', default=LABELS_FILENAME)
-    subp_rate.add_argument('-r', '--rating', default=RATING_FILENAME)
+    subp_rate = subparsers.add_parser(
+        'rate',
+        help='Manually rate articles.')
 
     return parser.parse_args()
 
