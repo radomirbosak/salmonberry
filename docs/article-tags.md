@@ -13,6 +13,8 @@
 * discussion
 * reflection
 * news
+* highlight
+* infographics
 
 
 ## Content length
@@ -20,6 +22,7 @@
 * short
 * middle
 * large
+* no-text
 
 
 ## High-level topic
