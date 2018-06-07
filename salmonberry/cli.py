@@ -5,6 +5,7 @@ import argparse
 from .download import download
 from .label import label, predict_labels
 from .rate import rate, predict_rating
+from .stats import stats
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -45,6 +46,8 @@ def parse_args():
         'predict_rating',
         help='Predict rating for given sentence.')
 
+    subp_stats = subparsers.add_parser('stats', help='Display useful statistics.')
+
     return parser.parse_args()
 
 
@@ -61,6 +64,8 @@ def main():
         rate(args.cache, args.labels, args.rating)
     elif args.action == 'predict_rating':
         predict_rating(args.cache, args.labels, args.rating)
+    elif args.action == 'stats':
+        stats(args.cache, args.labels, args.rating)
 
 if __name__ == '__main__':
     main()
