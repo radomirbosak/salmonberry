@@ -4,17 +4,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from .common import load_yaml, save_yaml, load_cache
-
-
-def load_labels(labels_filename):
-    labels = load_yaml(labels_filename)
-    logging.debug('Loaded %d labels.', len(labels))
-    return labels
-
-
-def save_labels(data, labels_filename):
-    save_yaml(data, labels_filename)
+from .common import load_yaml, save_yaml, load_cache, load_labels, save_labels
 
 
 def get_unlabeled(cache, labels):

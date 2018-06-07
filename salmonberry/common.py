@@ -38,3 +38,19 @@ def update_cache(old_cache, new_entries):
 
 def save_cache(data, cache_filename):
     save_yaml(data, cache_filename)
+
+
+def load_labels(labels_filename):
+    labels = load_yaml(labels_filename)
+    logging.debug('Loaded %d labels.', len(labels))
+    return labels
+
+
+def save_labels(data, labels_filename):
+    save_yaml(data, labels_filename)
+
+
+def load_ratings(ratings_filename):
+    ratings = load_yaml(ratings_filename)
+    logging.debug('Loaded %d ratings.', len(ratings))
+    return ratings

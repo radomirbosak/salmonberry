@@ -1,13 +1,6 @@
 import logging
 
-from .common import load_cache, load_yaml, save_yaml
-from .label import load_labels
-
-
-def load_ratings(ratings_filename):
-    ratings = load_yaml(ratings_filename)
-    logging.debug('Loaded %d ratings.', len(ratings))
-    return ratings
+from .common import load_cache, load_yaml, save_yaml, load_labels, load_ratings
 
 
 def ask_rating():
