@@ -2,7 +2,10 @@ import yaml
 import logging
 
 
-def load_yaml(filename, default=[]):
+def load_yaml(filename, default=list):
+    if default is list:
+        default = list()
+
     try:
         with open(filename, 'r') as fd:
             return yaml.load(fd) or default
